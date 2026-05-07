@@ -220,6 +220,11 @@ public class BarbFishingPlugin extends Plugin
 			WorldPoint last = activeSpotPosition.get(npc);
 			if (last != null && !current.equals(last))
 			{
+				if (client.getLocalPlayer() != null
+					&& isOrthogonallyAdjacent(last, client.getLocalPlayer().getWorldLocation()))
+				{
+					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
+				}
 				activeSpotMoveTick.put(npc, currentTick);
 				activeSpotPosition.put(npc, current);
 				unknownTimerSpots.remove(npc);
