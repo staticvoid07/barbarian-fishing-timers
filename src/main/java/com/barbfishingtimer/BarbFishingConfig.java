@@ -22,6 +22,7 @@ import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Notification;
 
 @ConfigGroup("barbarian-fishing-timers")
 public interface BarbFishingConfig extends Config
@@ -93,5 +94,16 @@ public interface BarbFishingConfig extends Config
 	default Color highColor()
 	{
 		return Color.RED;
+	}
+
+	@ConfigItem(
+		keyName = "spotMovedNotification",
+		name = "Spot moved notification",
+		description = "Notify when a fishing spot adjacent to you moves",
+		position = 6
+	)
+	default Notification spotMovedNotification()
+	{
+		return Notification.OFF;
 	}
 }

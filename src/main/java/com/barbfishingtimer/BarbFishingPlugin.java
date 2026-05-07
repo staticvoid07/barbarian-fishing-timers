@@ -35,6 +35,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
 import net.runelite.api.gameval.NpcID;
+import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -68,6 +69,9 @@ public class BarbFishingPlugin extends Plugin
 
 	@Inject
 	private BarbFishingConfig config;
+
+	@Inject
+	private Notifier notifier;
 
 	// Active barbarian fishing NPCs → game tick when they arrived at their current WorldPoint
 	@Getter
@@ -192,6 +196,11 @@ public class BarbFishingPlugin extends Plugin
 			WorldPoint last = activeSpotPosition.get(npc);
 			if (last != null && !current.equals(last))
 			{
+				if (client.getLocalPlayer() != null
+					&& last.distanceTo(client.getLocalPlayer().getWorldLocation()) <= 1)
+				{
+					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
+				}
 				activeSpotMoveTick.put(npc, currentTick);
 				activeSpotPosition.put(npc, current);
 				unknownTimerSpots.remove(npc);
