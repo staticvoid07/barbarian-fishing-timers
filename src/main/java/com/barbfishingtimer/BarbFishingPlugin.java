@@ -125,8 +125,31 @@ public class BarbFishingPlugin extends Plugin
 
 		if (cachedByPos != null)
 		{
-			// Same tile — player teleported away and back, spot didn't move.
-			activeSpotMoveTick.put(npc, cachedByPos[0]);
+			if (cachedByIndex != null)
+			{
+				WorldPoint prevPos = new WorldPoint(cachedByIndex[1], cachedByIndex[2], cachedByIndex[3]);
+				if (!pos.equals(prevPos))
+				{
+					// cachedByPos was from a different spot that previously occupied this tile.
+					// This spot actually moved here from prevPos.
+					activeSpotMoveTick.put(npc, cachedByIndex[4]);
+					if (client.getLocalPlayer() != null
+						&& isOrthogonallyAdjacent(prevPos, client.getLocalPlayer().getWorldLocation()))
+					{
+						notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
+					}
+				}
+				else
+				{
+					// Same tile confirmed by both caches — genuine teleport restore.
+					activeSpotMoveTick.put(npc, cachedByPos[0]);
+				}
+			}
+			else
+			{
+				// No index cache entry — same tile, player teleported away and back.
+				activeSpotMoveTick.put(npc, cachedByPos[0]);
+			}
 		}
 		else if (cachedByIndex != null)
 		{
@@ -136,6 +159,11 @@ public class BarbFishingPlugin extends Plugin
 				// Spot departed from an on-screen tile and reappeared here.
 				// Use the departure tick as the move tick — bounded by the TTL so it can't be stale.
 				activeSpotMoveTick.put(npc, cachedByIndex[4]);
+				if (client.getLocalPlayer() != null
+					&& isOrthogonallyAdjacent(prevPos, client.getLocalPlayer().getWorldLocation()))
+				{
+					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
+				}
 			}
 			else if (cachedByIndex[0] >= 0)
 			{
@@ -197,7 +225,7 @@ public class BarbFishingPlugin extends Plugin
 			if (last != null && !current.equals(last))
 			{
 				if (client.getLocalPlayer() != null
-					&& last.distanceTo(client.getLocalPlayer().getWorldLocation()) <= 1)
+					&& isOrthogonallyAdjacent(last, client.getLocalPlayer().getWorldLocation()))
 				{
 					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
 				}
@@ -238,6 +266,13 @@ public class BarbFishingPlugin extends Plugin
 			indexCache.clear();
 			unknownTimerSpots.clear();
 		}
+	}
+
+	private boolean isOrthogonallyAdjacent(WorldPoint a, WorldPoint b)
+	{
+		int dx = Math.abs(a.getX() - b.getX());
+		int dy = Math.abs(a.getY() - b.getY());
+		return (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
 	}
 
 	@Provides

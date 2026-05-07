@@ -7,6 +7,7 @@ A [RuneLite](https://runelite.net) plugin that displays how long each barbarian 
 - **Tick timer** displayed above each active barbarian fishing spot
 - **Color-coded thresholds** — green while fresh, yellow as it ages, red when it's been there a while (all colors and thresholds are configurable)
 - **Lowest timer highlight** — the spot with the lowest known timer is outlined in green, making it easy to identify the one least likely to move soon (toggleable)
+- **Spot moved notification** — optionally notifies you when a fishing spot directly beside you moves (configurable notification type)
 - **Persists through teleports** — if you teleport away and return within 2.5 minutes, timers are restored
 - **Off-screen move tracking** — if a spot moves out of render distance and you later reveal it, the timer reflects how long ago it departed its previous position
 
@@ -29,6 +30,7 @@ A [RuneLite](https://runelite.net) plugin that displays how long each barbarian 
 | Mid threshold | 300 ticks | Timer below this (and above low) is shown in the mid color |
 | Mid color | Yellow | Color for timers between the two thresholds |
 | High color | Red | Color for timers above the mid threshold |
+| Spot moved notification | Off | Notify when a fishing spot directly beside you (orthogonally adjacent) moves |
 
 ## Notes
 
