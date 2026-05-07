@@ -133,11 +133,6 @@ public class BarbFishingPlugin extends Plugin
 					// cachedByPos was from a different spot that previously occupied this tile.
 					// This spot actually moved here from prevPos.
 					activeSpotMoveTick.put(npc, cachedByIndex[4]);
-					if (client.getLocalPlayer() != null
-						&& isOrthogonallyAdjacent(prevPos, client.getLocalPlayer().getWorldLocation()))
-					{
-						notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
-					}
 				}
 				else
 				{
@@ -159,11 +154,6 @@ public class BarbFishingPlugin extends Plugin
 				// Spot departed from an on-screen tile and reappeared here.
 				// Use the departure tick as the move tick — bounded by the TTL so it can't be stale.
 				activeSpotMoveTick.put(npc, cachedByIndex[4]);
-				if (client.getLocalPlayer() != null
-					&& isOrthogonallyAdjacent(prevPos, client.getLocalPlayer().getWorldLocation()))
-				{
-					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
-				}
 			}
 			else if (cachedByIndex[0] >= 0)
 			{
@@ -200,6 +190,12 @@ public class BarbFishingPlugin extends Plugin
 
 		int despawnTick = client.getTickCount();
 
+		if (client.getLocalPlayer() != null
+			&& isOrthogonallyAdjacent(pos, client.getLocalPlayer().getWorldLocation()))
+		{
+			notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
+		}
+
 		if (!wasUnknown)
 		{
 			despawnCache.put(pos, new int[]{moveTick, despawnTick});
@@ -224,11 +220,6 @@ public class BarbFishingPlugin extends Plugin
 			WorldPoint last = activeSpotPosition.get(npc);
 			if (last != null && !current.equals(last))
 			{
-				if (client.getLocalPlayer() != null
-					&& isOrthogonallyAdjacent(last, client.getLocalPlayer().getWorldLocation()))
-				{
-					notifier.notify(config.spotMovedNotification(), "A fishing spot beside you moved.");
-				}
 				activeSpotMoveTick.put(npc, currentTick);
 				activeSpotPosition.put(npc, current);
 				unknownTimerSpots.remove(npc);
